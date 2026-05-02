@@ -16,6 +16,8 @@ if (missingVars.length > 0) {
 
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
+import notesRoutes from './routes/notes.route.js';
+// import commentRoutes from './routes/comment.route.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -34,6 +36,7 @@ app.use(express.json());
 // mount routes
 app.use('/', userRoutes)
 app.use('/', authRoutes)
+app.use('/', notesRoutes)
 // app.use('/', commentRoutes)
 
 // Global Error Handler Middleware
