@@ -11,7 +11,7 @@ import SignIn from './components/SignIn';
 import Register from './components/Register';
 import SignOut from './components/SignOut';
 import SearchResults from './components/SearchResults';
-import UserAccount from './components/UserAccount';
+import AddNotes from './components/AddNotes';
 
 // Pages
 import DashBoard from './pages/DashBoard';
@@ -33,7 +33,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/signout" element={<SignOut />} />
             <Route path="/search" element={<SearchResults />} />
-            <Route path="/profile" element={<UserAccount />} />
+            <Route path="/add-note" element={<AddNotes />} />
             <Route path="/dashboard" element={<DashBoard />} />
           </Routes>
         </main>

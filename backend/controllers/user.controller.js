@@ -3,7 +3,7 @@ import extend from 'lodash/extend.js'
 import { catchAsync } from '../utils/catchAsync.js';
 import { errorHandler } from '../middlewares/error.middleware.js';
 
-const create = catchAsync(async (req, res) => {
+const create = catchAsync(async (req, res, next) => {
   const user = new User(req.body)
   try {
     await user.save()
@@ -38,7 +38,7 @@ const read = (req, res) => {
   return res.json(req.profile)
 }
 
-const list = catchAsync(async (req, res) => {
+const list = catchAsync(async (req, res, next) => {
   try {
     let users = await User.find().select('name email updated created')
     res.json(users)
@@ -47,7 +47,7 @@ const list = catchAsync(async (req, res) => {
   }
 })
 
-const update = catchAsync(async (req, res) => {
+const update = catchAsync(async (req, res, next) => {
   try {
     let user = req.profile
     user = extend(user, req.body)
@@ -61,7 +61,7 @@ const update = catchAsync(async (req, res) => {
   }
 })
 
-const remove = catchAsync(async (req, res) => {
+const remove = catchAsync(async (req, res, next) => {
   try {
     let user = req.profile
     let deletedUser = await user.remove()

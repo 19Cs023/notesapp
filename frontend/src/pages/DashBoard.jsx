@@ -1,74 +1,104 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Container, Typography, Grid, Card, CardContent, CircularProgress, Box, Alert } from '@mui/material';
+import AddNotes from '../components/AddNotes';
 import useAuthStore from '../store/useAuthStore';
-import './DashBoard.css';
 
 const DashBoard = () => {
-  const navigate = useNavigate();
-  // Get actual user from Zustand global state
-  const user = useAuthStore((state) => state.user);
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuthStore();
+
+  const fetchNotes = async () => {
+    try {
+      const response = await fetch('/api/notes');
+      if (!response.ok) {
+        throw new Error('Failed to fetch notes');
+      }
+      const data = await response.json();
+      setNotes(data || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!user) {
-      navigate('/signin');
+    fetchNotes();
+  }, []);
+
+  const handleAddNote = async (newNote) => {
+    try {
+      const noteToSave = {
+        ...newNote,
+        category: 'General', // Default category since it's required
+      };
+      
+      const currentUserId = user?._id || '000000000000000000000000';
+
+      const response = await fetch(`/api/notes/user/${currentUserId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(noteToSave),
+      });
+
+      if (response.ok) {
+        fetchNotes(); // Refresh notes list after adding
+      } else {
+        console.error('Failed to add note');
+      }
+    } catch (err) {
+      console.error(err);
     }
-  }, [user, navigate]);
+  };
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>Dashboard</h1>
-        {user && <div className="user-info">Welcome, {user.name}</div>}
-      </header>
-      
-      <div className="dashboard-content">
-        <aside className="dashboard-sidebar">
-          <nav>
-            <ul>
-              <li><a href="#overview">Overview</a></li>
-              <li><a href="#profile">Profile Settings</a></li>
-              <li><a href="#security">Security</a></li>
-              <li><a href="#activity">Activity Log</a></li>
-            </ul>
-          </nav>
-        </aside>
-        
-        <main className="dashboard-main">
-          <section className="stats-grid">
-            <div className="stat-card">
-              <h3>Total Views</h3>
-              <p className="stat-value">1,245</p>
-            </div>
-            <div className="stat-card">
-              <h3>Active Sessions</h3>
-              <p className="stat-value">12</p>
-            </div>
-            <div className="stat-card">
-              <h3>New Messages</h3>
-              <p className="stat-value">4</p>
-            </div>
-          </section>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
+        Notes Dashboard
+      </Typography>
 
-          <section className="dashboard-panel">
-            <h2>Recent Activity</h2>
-            <ul className="activity-list">
-              <li>
-                <span className="activity-time">10:42 AM</span>
-                <span className="activity-text">Successful login from new IP</span>
-              </li>
-              <li>
-                <span className="activity-time">09:15 AM</span>
-                <span className="activity-text">Profile settings updated</span>
-              </li>
-              <li>
-                <span className="activity-time">Yesterday</span>
-                <span className="activity-text">Password changed successfully</span>
-              </li>
-            </ul>
-          </section>
-        </main>
-      </div>
-    </div>
+      <AddNotes onAddNote={handleAddNote} />
+
+      <Box mt={6}>
+        {loading && (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 4 }}>
+            {error}
+          </Alert>
+        )}
+
+        {!loading && !error && notes.length === 0 && (
+          <Typography variant="body1" color="text.secondary">
+            No notes found. Create some notes to see them here!
+          </Typography>
+        )}
+
+        {!loading && !error && notes.length > 0 && (
+          <Grid container spacing={3}>
+            {notes.map((note) => (
+              <Grid item xs={12} sm={6} md={4} key={note._id || Math.random()}>
+                <Card elevation={2} sx={{ height: '100%', display: 'flex', flexDirection: 'column', transition: '0.3s', '&:hover': { elevation: 6, transform: 'translateY(-4px)' } }}>
+                  <CardContent>
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'medium' }}>
+                      {note.title || 'Untitled Note'}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Box>
+    </Container>
   );
 };
 

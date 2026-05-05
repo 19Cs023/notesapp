@@ -46,6 +46,7 @@ const Navigation = () => {
             <Link to="/dashboard" className="btn log-in">Dashboard</Link>
             <Link to="/profile" className="btn log-in">Profile</Link>
             <Link to="/signout" className="btn sign-in">Sign Out</Link>
+            <Link to="/add-note" className="btn sign-in">Add Note</Link>
           </>
         ) : (
           <>

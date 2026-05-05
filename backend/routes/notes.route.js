@@ -1,5 +1,4 @@
 import express from 'express';
-import notes from '../models/notes';
 import notesCtrl from '../controllers/notes.controller.js';
 const router = express.Router();
 
@@ -10,10 +9,23 @@ router.route('/api/notes')
 router.route('/api/notes/search')
     .get(notesCtrl.searchByTitle);
 
+router.route('/api/notes/title/:title')
+    .get(notesCtrl.notesByTitle);
+
+router.route('/api/notes/date/:date')
+    .get(notesCtrl.notesByDate);
+
+router.route('/api/notes/category/:category')
+    .get(notesCtrl.notesByCategory);
+
+router.route('/api/notes/user/:userId')
+    .post(notesCtrl.createNotesByUser);
+
 router.route('/api/notes/:notesId')
-    .get(notesCtrl.read, notesCtrl.notesByID, notesCtrl.notesByTitle, notesCtrl.notesByDate, notesCtrl.notesByCategory)
+    .get(notesCtrl.read)
     .put(notesCtrl.update)
     .delete(notesCtrl.remove);
 
+router.param('notesId', notesCtrl.notesByID);
 
 export default router;
