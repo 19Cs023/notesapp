@@ -17,6 +17,39 @@
   color: #333;
 }
 
+.nav-elements {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin: 0 20px;
+  flex: 1;
+  justify-content: center;
+}
+
+.search-bar input {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-btn {
+  padding: 8px 15px;
+  margin-left: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
 .auth-buttons {
   display: flex;
   gap: 1rem;
@@ -28,6 +61,8 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  text-decoration: none;
+  text-align: center;
 }
 
 .log-in {
@@ -39,5 +74,82 @@
 .sign-in {
   background-color: #007bff;
   color: white;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  gap: 5px;
+}
+
+.hamburger {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 1rem;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  .nav-elements {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .nav-elements.active {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .search-bar {
+    margin: 0;
+    width: 100%;
+  }
+
+  .search-bar input {
+    max-width: none;
+  }
+
+  .auth-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .auth-buttons .btn {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .hamburger.open:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .hamburger.open:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.open:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
 }
 

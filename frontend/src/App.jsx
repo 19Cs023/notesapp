@@ -15,6 +15,8 @@ import AddNotes from './components/AddNotes';
 
 // Pages
 import DashBoard from './pages/DashBoard';
+import NotesCard from './pages/NotesCard';
+
 
 import './App.css';
 
@@ -35,6 +37,7 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/add-note" element={<AddNotes />} />
             <Route path="/dashboard" element={<DashBoard />} />
+            <Route path="/note/:id" element={<NotesCard />} />
           </Routes>
         </main>
 

@@ -22,7 +22,8 @@ const list = catchAsync(async (req, res, next) => {
     }
 });
 
-const notesByID = catchAsync(async (req, res, next, id) => {
+const notesByID = async (req, res, next, id) => {
+    console.log("Looking for note by ID:", id);
     try {
         const notes = await Notes.findById(id);
         if (!notes) {
@@ -31,9 +32,9 @@ const notesByID = catchAsync(async (req, res, next, id) => {
         req.notes = notes;
         next();
     } catch (error) {
-        errorHandler(error, req, res);
+        errorHandler(error, req, res, next);
     }
-});
+};
 
 
 //search notes by title

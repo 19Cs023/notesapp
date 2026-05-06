@@ -7,6 +7,7 @@ const Navigation = () => {
   const token = useAuthStore((state) => state.token);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -14,46 +15,61 @@ const Navigation = () => {
     try {
       const encodedQuery = encodeURIComponent(searchQuery.trim());
       navigate(`/search?q=${encodedQuery}`);
+      setIsMobileMenuOpen(false);
     } catch (err) {
       console.error('Error during search navigation:', err);
     }
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <header className="header-container">
       <div className="logo">
-        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h2>MERN Skeleton</h2>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }} onClick={closeMobileMenu}>
+          <h2>notesapp</h2>
         </Link>
       </div>
 
-      <form className="search-bar" onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center', margin: '0 20px', flex: 1, justifyContent: 'center' }}>
-        <input 
-          type="text" 
-          placeholder="Search..." 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ccc', width: '100%', maxWidth: '400px' }}
-        />
-        <button type="submit" style={{ padding: '8px 15px', marginLeft: '8px', borderRadius: '4px', border: 'none', backgroundColor: '#007bff', color: 'white', cursor: 'pointer' }}>
-          Search
-        </button>
-      </form>
+      <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+        <span className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}></span>
+        <span className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}></span>
+        <span className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}></span>
+      </button>
 
-      <div className="auth-buttons">
-        {token ? (
-          <>
-            <Link to="/dashboard" className="btn log-in">Dashboard</Link>
-            <Link to="/profile" className="btn log-in">Profile</Link>
-            <Link to="/signout" className="btn sign-in">Sign Out</Link>
-            <Link to="/add-note" className="btn sign-in">Add Note</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/signin" className="btn log-in">Sign In</Link>
-            <Link to="/register" className="btn sign-in">Sign Up</Link>
-          </>
-        )}
+      <div className={`nav-elements ${isMobileMenuOpen ? 'active' : ''}`}>
+        <form className="search-bar" onSubmit={handleSearch}>
+          <input 
+            type="text" 
+            placeholder="Search..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="submit" className="search-btn">
+            Search
+          </button>
+        </form>
+
+        <div className="auth-buttons">
+          {token ? (
+            <>
+              <Link to="/dashboard" className="btn log-in" onClick={closeMobileMenu}>Dashboard</Link>
+              <Link to="/add-note" className="btn sign-in" onClick={closeMobileMenu}>Add Note</Link>
+              <Link to="/signout" className="btn sign-in" onClick={closeMobileMenu}>Sign Out</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/signin" className="btn log-in" onClick={closeMobileMenu}>Sign In</Link>
+              <Link to="/register" className="btn sign-in" onClick={closeMobileMenu}>Sign Up</Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

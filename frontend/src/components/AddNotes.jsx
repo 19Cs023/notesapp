@@ -1,10 +1,27 @@
-import { useState } from 'react';
-import { Box, TextField, Button, Typography, Paper } from '@mui/material';
+import { useState, useRef, useEffect } from 'react';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 
 const AddNotes = ({ onAddNote, userId }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('General');
+  
+  const editorRef = useRef(null);
+  const quillRef = useRef(null);
+
+  useEffect(() => {
+    if (editorRef.current && !quillRef.current) {
+      quillRef.current = new Quill(editorRef.current, {
+        theme: 'snow',
+        placeholder: 'Write your note here...'
+      });
+      quillRef.current.on('text-change', () => {
+        setContent(quillRef.current.root.innerHTML);
+      });
+    }
+  }, []);
 
   // Used if no onAddNote is passed
   const postNote = async (note) => {
@@ -43,11 +60,14 @@ const AddNotes = ({ onAddNote, userId }) => {
     setTitle('');
     setContent('');
     setCategory('General');
+    if (quillRef.current) {
+      quillRef.current.setText('');
+    }
   };
 
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 600, mx: 'auto', mt: 4, borderRadius: 2 }}>
-      <Typography variant="h5" component="h2" gutterBottom>
+      <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'black' }}>
         Create a New Note
       </Typography>
       
@@ -64,16 +84,16 @@ const AddNotes = ({ onAddNote, userId }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <TextField
-          label="Note Content"
+         <TextField
+          label="Category"
           variant="outlined"
-          multiline
-          rows={5}
           fullWidth
-          required
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         />
+        <Box sx={{ '.ql-editor': { minHeight: '150px' } }}>
+          <div ref={editorRef} />
+        </Box>
         <Button 
           type="submit" 
           variant="contained" 

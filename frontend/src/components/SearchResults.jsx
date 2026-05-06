@@ -7,14 +7,14 @@ const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q');
   
-  const [blogs, setBlogs] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (!query) {
-        setBlogs([]);
+        setNotes([]);
         setLoading(false);
         return;
       }
@@ -23,8 +23,8 @@ const SearchResults = () => {
       setError(null);
       
       try {
-        const response = await axios.get(`http://localhost:5000/api/blogs/search?searchQuery=${encodeURIComponent(query)}`);
-        setBlogs(response.data);
+        const response = await axios.get(`http://localhost:5000/api/notes/search?title=${encodeURIComponent(query)}`);
+        setNotes(response.data);
       } catch (err) {
         console.error('Error fetching search results:', err);
         setError('Failed to fetch search results.');
@@ -43,21 +43,21 @@ const SearchResults = () => {
     <div className="search-results-container">
       <h2>Search Results for "{query}"</h2>
       
-      {blogs.length === 0 ? (
-        <div className="no-search-results">No articles found matching your query.</div>
+      {notes.length === 0 ? (
+        <div className="no-search-results">No notes found matching your query.</div>
       ) : (
-        <div className="search-blogs-list">
-          {blogs.map(blog => (
-            <div key={blog._id} className="search-blog-card">
-              <Link to={`/blogs/${blog._id}`} className="search-blog-title-link">
-                <h4>{blog.title}</h4>
+        <div className="search-notes-list">
+          {notes.map(note => (
+            <div key={note._id} className="search-note-card">
+              <Link to={`/notes/${note._id}`} className="search-note-title-link">
+                <h4>{note.title}</h4>
               </Link>
-              <span className="search-blog-tag">{blog.tag}</span>
-              <p className="search-blog-excerpt">
-                {(blog.content || '').length > 150 ? `${blog.content.substring(0, 150)}...` : blog.content}
+              <span className="search-note-tag">{note.category}</span>
+              <p className="search-note-excerpt">
+                {(note.content || '').length > 150 ? `${note.content.substring(0, 150)}...` : note.content}
               </p>
-              <div className="search-blog-meta">
-                Published: {new Date(blog.created).toLocaleDateString()}
+              <div className="search-note-meta">
+                Published: {new Date(note.created).toLocaleDateString()}
               </div>
             </div>
           ))}

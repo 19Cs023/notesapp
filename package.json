@@ -20,5 +20,8 @@
     "frontend/**/*.{js,jsx,ts,tsx}": [
       "npm run lint -w frontend"
     ]
+  },
+  "dependencies": {
+    "react-quill": "^2.0.0"
   }
 }
